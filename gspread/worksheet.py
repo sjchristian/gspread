@@ -1095,7 +1095,7 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_row(self, values, index=1, value_input_option="RAW"):
+    def insert_row(self, values, index=1, value_input_option="RAW", inherit_from_before=False):
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1108,10 +1108,13 @@ class Worksheet:
             ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        :param bool inherit_from_before: (optional) give new rows the same 
+            properties as preceding row instead of following one
         """
-        return self.insert_rows([values], index, value_input_option=value_input_option)
+        return self.insert_rows([values], index, value_input_option=value_input_option, 
+            inherit_from_before=inherit_from_before)
 
-    def insert_rows(self, values, row=1, value_input_option="RAW"):
+    def insert_rows(self, values, row=1, value_input_option="RAW", inherit_from_before=False):
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1122,6 +1125,8 @@ class Worksheet:
         :param str value_input_option: (optional) Determines how input data
             should be interpreted. Possible values are ``RAW`` or
             ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+        :param bool inherit_from_before: (optional) give new rows the same 
+            properties as preceding row instead of following one
         """
         body = {
             "requests": [
@@ -1132,7 +1137,8 @@ class Worksheet:
                             "dimension": "ROWS",
                             "startIndex": row - 1,
                             "endIndex": len(values) + row - 1,
-                        }
+                        },
+                        "inheritFromBefore": inherit_from_before
                     }
                 }
             ]
@@ -1148,7 +1154,7 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_cols(self, values, col=1, value_input_option="RAW"):
+    def insert_cols(self, values, col=1, value_input_option="RAW", inherit_from_before=False):
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -1159,6 +1165,8 @@ class Worksheet:
         :param str value_input_option: (optional) Determines how input data
             should be interpreted. Possible values are ``RAW`` or
             ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+        :param bool inherit_from_before: (optional) give new columns the same 
+            properties as preceding column instead of following one
         """
         body = {
             "requests": [
@@ -1169,7 +1177,8 @@ class Worksheet:
                             "dimension": "COLUMNS",
                             "startIndex": col - 1,
                             "endIndex": len(values) + col - 1,
-                        }
+                        },
+                        "inheritFromBefore": inherit_from_before
                     }
                 }
             ]
